@@ -25,3 +25,10 @@ UNPIVOT
       (Emp1, Emp2, Emp3, Emp4, Emp5)  
 )AS unpvt;  
 GO  
+
+-- Calculate difference in time between two dates
+-- See below link on more info on the required parameters, etc
+-- https://www.w3schools.com/sql/func_sqlserver_datediff.asp
+
+DATEDIFF(interval, date1, date2)
+
