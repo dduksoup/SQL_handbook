@@ -32,3 +32,18 @@ GO
 
 DATEDIFF(interval, date1, date2)
 
+-- Cross apply
+-- The APPLY operator is similar to the JOIN operator, but the difference is that the right-hand side operator of APPLY can reference columns from the left-hand side. Here are two very quick examples:
+-- As you in the examples there are both CROSS APPLY and OUTER APPLY. The difference between these two is what happens when the right-hand side returns no rows. With OUTER APPLY, the row from the left-hand side is retained, showing NULLs in all columns from the right-hand side. With CROSS APPLY, the row on the left-hand side is removed from the result set.
+
+SELECT a.col, b.resultcol
+FROM     dbo.tbl a
+CROSS    APPLY dbo.mytblfunc(a.somecol) AS b
+That is, you call a table-valued function where the parameters comes from the table.
+
+SELECT C.CustomerName, O.*
+FROM     Customers C
+OUTER    APPLY (SELECT TOP 1 *
+                            FROM     Orders O
+                            WHERE    C.CustomerID = O.CustomerID
+                            ORDER    BY O.OrderDate DESC, O.OrderID DESC) AS O
