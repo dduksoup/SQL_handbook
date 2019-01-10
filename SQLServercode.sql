@@ -59,3 +59,26 @@ WITH TOPTEN AS (
     FROM [table_name]
 )
 SELECT * FROM TOPTEN WHERE RowNo <= 10
+
+-- UserDefinedFunction: Return the greater of two float parameters
+
+CREATE FUNCTION [DBO].[GREATER] (
+	@val1 float
+	, @val2 float
+	)
+	RETURNS float
+
+BEGIN
+	DECLARE @returnval float;
+
+	set @returnval = (SELECT CASE
+			WHEN @val1 >= @val2
+				THEN @val1
+			WHEN @VAL1 < @val2
+				THEN @val2
+			ELSE NULL
+			END AS RETVAL)
+	RETURN @RETURNVAL
+END;
+
+SELECT DBO.[GREATER](5+5, 4)
