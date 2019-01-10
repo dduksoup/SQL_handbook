@@ -47,3 +47,15 @@ OUTER    APPLY (SELECT TOP 1 *
                             FROM     Orders O
                             WHERE    C.CustomerID = O.CustomerID
                             ORDER    BY O.OrderDate DESC, O.OrderID DESC) AS O
+
+-- Return top n rows for each category
+
+WITH TOPTEN AS (
+    SELECT *, ROW_NUMBER() 
+    over (
+        PARTITION BY [group_by_field] 
+        order by [prioritise_field]
+    ) AS RowNo 
+    FROM [table_name]
+)
+SELECT * FROM TOPTEN WHERE RowNo <= 10
