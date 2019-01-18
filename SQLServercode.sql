@@ -82,3 +82,16 @@ BEGIN
 END;
 
 SELECT DBO.[GREATER](5+5, 4)
+
+
+-- sys.columns and object id
+	    
+	    
+
+select quotename(name)
+from sys.columns
+where [object_id] = object_id(N'dbo.[struc_ul]')
+
+select object_id(N'dbo.[struc_ul]'), quotename(name)
+from sys.columns
+where [object_id] = object_id(N'dbo.[struc_ul]')
