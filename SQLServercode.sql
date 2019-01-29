@@ -95,3 +95,18 @@ where [object_id] = object_id(N'dbo.[struc_ul]')
 select object_id(N'dbo.[struc_ul]'), quotename(name)
 from sys.columns
 where [object_id] = object_id(N'dbo.[struc_ul]')
+
+-- Return rows with a NULL value in any of its columns
+
+-- Construct custom procedure
+DECLARE @TB NVARCHAR(512) = N'DBO.[_UL_NULLvalues]';
+
+DECLARE @SQL NVARCHAR(MAX) = N'SELECT * FROM ' + @TB
+    + ' WHERE 1 = 0';
+
+SELECT @SQL += N' OR ' + QUOTENAME(NAME) + ' IS NULL'
+    FROM SYS.COLUMNS 
+    WHERE [OBJECT_ID] = OBJECT_ID(@TB);
+
+-- Run procedure
+EXEC SYS.SP_EXECUTESQL @SQL;
