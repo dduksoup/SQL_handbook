@@ -110,3 +110,18 @@ SELECT @SQL += N' OR ' + QUOTENAME(NAME) + ' IS NULL'
 
 -- Run procedure
 EXEC SYS.SP_EXECUTESQL @SQL;
+	    
+-- Create custom procedure
+	    
+Create function dbo.[MakeISODate] 
+	(@inputdate numeric) 
+	RETURNS date
+	BEGIN
+		Declare @returndate date;
+
+		Set @returndate = convert(date, convert(nvarchar, convert(numeric, @inputdate)))
+
+		Return @returndate
+	END;
+	
+select dbo.[makedate](20191205.0555)
