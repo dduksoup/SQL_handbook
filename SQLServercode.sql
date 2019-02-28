@@ -125,3 +125,41 @@ Create function dbo.[MakeISODate]
 	END;
 	
 select dbo.[makedate](20191205.0555)
+
+-- Extract 5 digit substring
+	    
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+Create FUNCTION GetFiveDigits 
+(
+	@src varchar(255)
+)
+RETURNS varchar(5)
+AS
+BEGIN
+	DECLARE @retVal varchar(5)
+	declare @srcLen int
+    declare @curPos int
+
+    if @src is null 
+          return null
+
+	select @srcLen = datalength(@src), @curPos = 1, @retVal=''
+    While @curPos <= @srcLen
+	begin
+		if substring(@src,@curpos,1) like '[0-9]'
+			select @retVal=@retVal + substring(@src,@curpos,1)
+		else
+			select @retVal=''
+		if datalength(@retVal)=5
+			return @retVal
+		Select @curPos = @curPos + 1
+	end
+		if datalength(@retVal)=5
+			return @retVal
+		--else 
+			return null
+END
+GO
