@@ -163,3 +163,49 @@ BEGIN
 			return null
 END
 GO
+
+-- user defined function for calculating age nearest birthday
+	    
+use ACT_DATA_201903
+go
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE FUNCTION [dbo].[GetAgeNB] (@BirthDate numeric, @CompDate numeric)
+RETURNS INT
+AS
+BEGIN
+	DECLARE @Bd int set @Bd = cast(right(@BirthDate, 2) as int)
+	DECLARE @Bm int set @Bm = cast(left(right(@BirthDate, 4), 2) as int)
+	DECLARE @By int set @By = cast(left(@BirthDate, 4) as int)
+	DECLARE @Cd int set @Cd = cast(right(@CompDate, 2) as int)
+	DECLARE @Cm int set @Cm = cast(left(right(@CompDate, 4), 2) as int)
+	DECLARE @Cy int set	@Cy = cast(left(@CompDate, 4) as int)
+	
+	DECLARE @Result Int
+	Set @Result = (CASE
+		WHEN @Bm < @Cm THEN (CASE
+			WHEN @CM - @BM < 6 THEN @CY - @BY
+			WHEN @CM - @BM = 6 THEN (CASE
+				WHEN @BD <= @CD THEN @CY - @BY + 1
+				ELSE @CY - @BY
+				END)
+			ELSE @CY - @BY + 1
+			END)
+		WHEN @BM = @CM THEN @CY - @BY
+		ELSE (CASE
+			WHEN @BM - @CM < 6 THEN @CY - @BY
+			WHEN @BM - @CM = 6 THEN (CASE
+				WHEN @BD > @CD THEN @CY - @BY - 1
+				ELSE @CY - @BY
+				END)
+			ELSE @CY - @BY - 1
+			END)
+		END)
+
+	RETURN @RESULT
+END
+		
+	
+	
