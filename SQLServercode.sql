@@ -207,5 +207,32 @@ BEGIN
 	RETURN @RESULT
 END
 		
+-- UDF: Policy month calculator 
 	
+
+CREATE FUNCTION [dbo].[PolMonth] (@DateA DATE, @DateB DATE)
+
+RETURNS INT 
+as
+
+BEGIN
+	-- Declare variables
+	Declare @Result		INT
+	Declare @DateX		Date --starting date
+	Declare @DateY		Date --ending date
 	
+	Set @Datex = @DateA
+	Set @Datey = @DateB
+
+	SET @Result = (
+		SELECT DATEDIFF(MONTH, @datex, @datey)
+			+ (CASE
+				when datepart(DAY, @datex) < datepart(DAY, @datey) then 1
+				else 0
+				end)
+		)
+
+	RETURN @Result
+END
+GO
+
