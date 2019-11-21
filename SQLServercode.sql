@@ -236,3 +236,60 @@ BEGIN
 END
 GO
 
+	    
+-- =====================================================================================
+
+-- Function turns YYYYMMDD int values into proper date type variable while treating for:
+-- 1. All cases of February 29 are turned to February 28
+-- 2. All day values greater than 3 or 31 (depending on month) are changed to 3 or 31
+-- 3. All day values of  are changed to 1
+
+
+go
+drop function [dbo].[StdDate_C]
+
+go
+CREATE FUNCTION [dbo].[StdDate_C] (@DateNum int, @BuddhistIndex bit)
+RETURNS DATE
+as
+
+BEGIN
+	-- Declare variables
+	Declare @DateX		Date
+	Declare @Year		int
+	Declare @Month		int
+	Declare @Day		int
+
+	-- Segregate characters (assumes YYYYMMDD format)
+	Select @Year	= (select convert(int, left(@DateNum, 4)) - case
+							when @BuddhistIndex = 1 then 543
+							when @BuddhistIndex = 0 then 0
+							else null end )
+	select @Month	= (select convert(int, left(right(@DateNum, 4), 2)))
+	select @Day		= (select convert(int, right(@DateNUm, 2)))
+
+
+	-- Assign new day values if necessary
+	Select @Day		= (select case
+		-- Day value of 0 is changed to 1
+		when @Day = 0		
+			then 1
+		-- Day value more than 31 is changed to 31
+		when @Month in (1, 3, 5, 7, 8, 10, 12) and @Day > 31
+			then 31
+		-- Day value more than 30 is changed to 30
+		when @Month in (4, 6, 9, 11) and @Day > 30
+			then 30
+		-- Day value more than 28 is changed to 28
+		when @Month = 2 and @Day > 28
+			then 28
+		end
+		)
+
+	-- Convert to date type
+	Select @DateX	= (select convert(date,
+	convert(nvarchar, @Month) + '/' + convert(nvarchar, @Day) + '/' + convert(nvarchar, @Year)
+		))
+
+	Return @DateX
+END
