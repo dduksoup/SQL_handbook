@@ -293,3 +293,26 @@ BEGIN
 
 	Return @DateX
 END
+
+					  
+					  
+-- =====================================================================================
+-- Returns the DOI anniversary date where attained age reaches 60
+
+Create function [dbo].[fn_60thAttAge] (
+	  @date_inforce date
+	, @insured_age int
+	)
+	Returns date
+
+BEGIN
+	Declare @dateat60 date;
+	set @dateat60 = (select dateadd(yy, case 
+		when @insured_age >= 60 then 0
+		else 60 - @insured_age
+		end, @date_inforce))
+	Return @dateat60
+
+END
+
+select [dbo].[fn_60thAttAge](convert(date, '1/15/2019'), 30)
